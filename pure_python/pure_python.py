@@ -23,18 +23,18 @@ def show(output):
         print "Couldn't import Image or numpy:", str(err)
 
 
-def calculate_z(q, maxiter, z):
+def calculate_z_serial_purepython(q, maxiter, z):
     """Pure python with complex datatype, iterating over list of q and z"""
     output = [0] * len(q)
     for i in range(len(q)):
-        zi = z[i]  # <-- Pull value here to avoid 1000 lookups
-        qi = q[i]  # <-- Pull value here to avoid 1000 lookups
+        zi = z[i]
+        qi = q[i]
         if i % 1000 == 0:
             # print out some progress info since it is so slow...
             print "%0.2f%% complete" % (1.0/len(q) * i * 100)
         for iteration in range(maxiter):
-            #z[i] = z[i]*z[i] + q[i]  <-- Slow looks up val for each loop
-            zi = zi * zi + qi       # <-- Quicker, no lookup required
+            #z[i] = z[i]*z[i] + q[i]
+            zi = zi * zi + qi
             #if abs(z[i]) > 2.0:
             if abs(zi) > 2.0:
                 output[i] = iteration
@@ -68,7 +68,7 @@ def calc_pure_python(show_output):
     z = [0+0j] * len(q)
     print "Total elements:", len(z)
     start_time = datetime.datetime.now()
-    output = calculate_z(q, maxiter, z)
+    output = calculate_z_serial_purepython(q, maxiter, z)
     end_time = datetime.datetime.now()
     secs = end_time - start_time
     print "Main took", secs
